@@ -8,7 +8,7 @@ on:
 env:
   PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
   DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
-  PG_VERSION: 17
+  PG_VERSION: 16
 
 jobs:
   check-pg-versions:
