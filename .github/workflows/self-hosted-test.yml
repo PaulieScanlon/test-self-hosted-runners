@@ -1,0 +1,27 @@
+name: Self Hosted Runner
+
+on:
+  # schedule:
+  # - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+  workflow_dispatch:
+
+env:
+  PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+
+jobs:
+  check-pg-versions:
+    runs-on: self-hosted
+
+    steps:
+      - name: Start PostgreSQL Service
+        run: |
+          sudo systemctl start postgresql.service
+
+      - name: Check PostgreSQL Version
+        run: |
+          sudo -u postgres psql -c "SELECT version();"
+
+      - name: Check psql Version
+        run: |
+          psql --version
