@@ -8,20 +8,26 @@ on:
 env:
   PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
   DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+  PG_VERSION: 17
 
 jobs:
   check-pg-versions:
     runs-on: self-hosted
 
     steps:
-      - name: Start PostgreSQL Service
+      - name: Install PostgreSQL
         run: |
-          sudo systemctl start postgresql.service
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
 
-      - name: Check PostgreSQL Version
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+      - name: PostgreSQL version
         run: |
-          sudo -u postgres psql -c "SELECT version();"
+          "$POSTGRES/psql" "$DEV_DATABASE_URL" -c "SELECT version();"
 
       - name: Check psql Version
         run: |
-          psql --version
+          $POSTGRES/psql --version
