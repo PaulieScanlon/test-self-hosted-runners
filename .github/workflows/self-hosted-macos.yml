@@ -1,0 +1,42 @@
+name: Self Hosted Runner | macOS
+
+on:
+  workflow_dispatch:
+
+env:
+  PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+  PG_VERSION: 17
+
+jobs:
+  check-pg-versions:
+    runs-on: self-hosted
+
+    steps:
+      - name: Install Homebrew
+        run: |
+          if ! command -v brew &>/dev/null; then
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          fi
+
+      - name: Install PostgreSQL
+        run: |
+          brew update
+          brew install postgresql@${{ env.PG_VERSION }}
+          brew link --force --overwrite postgresql@${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=$(brew --prefix postgresql@${{ env.PG_VERSION }})/bin" >> $GITHUB_ENV
+
+      - name: Start PostgreSQL service
+        run: |
+          brew services start postgresql@${{ env.PG_VERSION }}
+          sleep 5
+
+      - name: PostgreSQL version
+        run: |
+          "$POSTGRES/psql" "$DEV_DATABASE_URL" -c "SELECT version();"
+
+      - name: Check psql Version
+        run: |
+          $POSTGRES/psql --version
