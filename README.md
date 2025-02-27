@@ -6,7 +6,7 @@
 
 Use the ARM64 setup option from GitHub. This avoids compatibility issues, ensures better performance, and prevents installation errors like the `brew` issues.
 
-## Getting Started
+## Local Getting Started
 
 Run the following to start the runner
 

@@ -1,8 +1,6 @@
 name: Self Hosted Runner | Ubuntu
 
 on:
-  # schedule:
-  # - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
   workflow_dispatch:
 
 env:
@@ -15,6 +13,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Install PostgreSQL Common Package
+        run: |
+          sudo apt update
+          sudo apt install -y postgresql-common
+
       - name: Install PostgreSQL
         run: |
           sudo apt update
