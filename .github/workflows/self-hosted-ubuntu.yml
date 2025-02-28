@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 env:
-  PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
   DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
   PG_VERSION: 16
 
@@ -16,7 +15,7 @@ jobs:
       - name: Install PostgreSQL Common Package
         run: |
           sudo apt update
-          sudo apt install -y postgresql-common
+          yes '' | sudo apt install -y postgresql-common
 
       - name: Install PostgreSQL
         run: |
