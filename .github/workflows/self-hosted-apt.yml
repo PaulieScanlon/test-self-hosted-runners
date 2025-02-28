@@ -1,0 +1,35 @@
+name: Self Hosted Runner
+
+on:
+  workflow_dispatch:
+
+env:
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+  PG_VERSION: 16
+
+jobs:
+  check-pg-version:
+    runs-on: self-hosted
+
+    steps:
+      - name: Install PostgreSQL Common Package
+        run: |
+          sudo apt update
+          sudo apt install -y postgresql-common
+
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+      - name: PostgreSQL version
+        run: |
+          "$POSTGRES/psql" "$DEV_DATABASE_URL" -c "SELECT version();"
+
+      - name: Check psql Version
+        run: |
+          $POSTGRES/psql --version
