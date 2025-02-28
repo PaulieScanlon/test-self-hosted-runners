@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Install PostgreSQL Common Package
         run: |
-          sudo apt update
+          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S apt update
           sudo apt install -y postgresql-common
 
       - name: Install PostgreSQL
